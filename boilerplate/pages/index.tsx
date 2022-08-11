@@ -1,63 +1,72 @@
 import type { NextPage } from "next";
 
+import axios from "axios";
+import { google } from "googleapis";
+
+import { useState } from "react";
 import styled from "styled-components";
 
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import { Calendar } from "@fullcalendar/core";
+interface IData {
+  [key: string]: string;
+}
 
 const Home: NextPage = () => {
-  const events = [
-    {
-      title: "이번주 시작",
-      start: "2021-12-20T10:00:00",
-    },
-    {
-      title: "스튜디오 메이트 클론 코딩",
-      start: "2021-12-20T10:00:00",
-      allday: true,
-    },
-    {
-      title: "event3",
-      start: "2021-12-31T12:30:00",
-      allDay: false, // will make the time show
-    },
-  ];
+  const [data, setData] = useState<IData | null>(null);
 
-  // const Calendar = styled.div``;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (data) {
+      setData({ ...data, [name]: value });
+    } else {
+      setData({ [name]: value });
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = data;
+
+    const res = await fetch("/api/writeSheet", {
+      method: "POST",
+      headers: {
+        // Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const content = await res.json();
+    alert(content.data);
+  };
+
   return (
-    <div>
-      <FullCalendar
-        locale="ko"
-        schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
-        plugins={[
-          dayGridPlugin,
-          timeGridPlugin,
-          interactionPlugin,
-          resourceTimelinePlugin,
-        ]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          left: "title",
-          center: "prev today next",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,resourceTimeline",
-        }}
-        buttonText={{
-          today: "오늘",
-          dayGridMonth: "월간",
-          timeGridWeek: "주간",
-          timeGridDay: "일간",
-          resourceTimeline: "일간(강사별)",
-        }}
-        events={{ events }}
-        editable
-        nowIndicator
+    <Wrapper onSubmit={onSubmit}>
+      <h2>Welcome to ButfitSeoul boilerplate :)</h2>
+      <input type="text" name={"name"} value={data?.name} onChange={onChange} />
+      <input
+        type="text"
+        name={"phone_number"}
+        value={data?.phone_number}
+        onChange={onChange}
       />
-    </div>
+      <input
+        type="text"
+        name={"email"}
+        value={data?.email}
+        onChange={onChange}
+      />
+      <button type={"submit"}>저장</button>
+    </Wrapper>
   );
 };
 
 export default Home;
+
+const Wrapper = styled.form`
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

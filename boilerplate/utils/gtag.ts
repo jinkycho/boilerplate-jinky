@@ -13,7 +13,7 @@ interface Event {
   value: any;
 }
 
-export const GA_TRACKING_ID = "G-3W7VWSF6S0";
+export const GA_TRACKING_ID = "G-5GQBCK5K27";
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string) => {
