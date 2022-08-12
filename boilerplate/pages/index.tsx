@@ -1,63 +1,44 @@
 import type { NextPage } from "next";
 
+import { useRouter } from 'next/router';
 import styled from "styled-components";
 
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import { Calendar } from "@fullcalendar/core";
+
 
 const Home: NextPage = () => {
-  const events = [
-    {
-      title: "이번주 시작",
-      start: "2021-12-20T10:00:00",
-    },
-    {
-      title: "스튜디오 메이트 클론 코딩",
-      start: "2021-12-20T10:00:00",
-      allday: true,
-    },
-    {
-      title: "event3",
-      start: "2021-12-31T12:30:00",
-      allDay: false, // will make the time show
-    },
-  ];
+  const router = useRouter();
 
-  // const Calendar = styled.div``;
+
+
   return (
-    <div>
-      <FullCalendar
-        locale="ko"
-        schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
-        plugins={[
-          dayGridPlugin,
-          timeGridPlugin,
-          interactionPlugin,
-          resourceTimelinePlugin,
-        ]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          left: "title",
-          center: "prev today next",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,resourceTimeline",
-        }}
-        buttonText={{
-          today: "오늘",
-          dayGridMonth: "월간",
-          timeGridWeek: "주간",
-          timeGridDay: "일간",
-          resourceTimeline: "일간(강사별)",
-        }}
-        events={{ events }}
-        editable
-        nowIndicator
-      />
-    </div>
+    <Wrapper>
+      <h1>Welcome to ButfitSeoul boilerplate</h1>
+      <Button onClick={() => router.push('/googlesheet')}>
+        <span>구글 시트 샘플 보기</span>
+      </Button>
+    </Wrapper>
   );
 };
 
 export default Home;
+
+const Wrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Button = styled.button`
+  width: 150px;
+  height: 50px;
+  background: #79a4c5;
+  border: none;
+  border-radius: 10px;
+
+  & span{
+    color: #fff;
+    font-weight: bold;
+  }
+`
