@@ -16,8 +16,8 @@ export default async function writeSheet(
     //prepare auth
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        client_email: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.NEXT_PUBLIC_GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       },
       scopes: [
         "https://www.googleapis.com/auth/drive",
@@ -31,19 +31,17 @@ export default async function writeSheet(
       version: "v4",
     });
 
-    const res = await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    sheets.spreadsheets.values.append({
+      spreadsheetId: process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID,
       range: "A1:C1",
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[body.name, body.phone_number, body.email]],
+        values: [[body.이름, body.번호, body.이메일]],
       },
-    });
+    }).then(() => res.status(200).json({ data: '입력 성공 :)' }));
 
-    console.log("res", res);
-    // return res.status(200).json({ data: res.data });
   } catch (e: any) {
     console.log("e", e);
-    return res.status(500).send({ message: "에러 발생" });
+    return res.status(e.code).send({ message: "에러 발생 :(" });
   }
 }
