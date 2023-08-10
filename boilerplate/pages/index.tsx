@@ -1,20 +1,22 @@
 import type { NextPage } from "next";
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import styled from "styled-components";
-
-
 
 const Home: NextPage = () => {
   const router = useRouter();
 
-
-
   return (
     <Wrapper>
       <h1>Welcome to ButfitSeoul boilerplate</h1>
-      <Button onClick={() => router.push('/googlesheet')}>
+      <Button onClick={() => router.push("/googlesheet")}>
         <span>구글 시트 샘플 보기</span>
+      </Button>
+      <Button
+        onClick={() => router.push("/spotify")}
+        style={{ background: "blue" }}
+      >
+        <span>스포티파이 샘플 보기</span>
       </Button>
     </Wrapper>
   );
@@ -28,6 +30,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 `;
 
 const Button = styled.button`
@@ -37,8 +40,8 @@ const Button = styled.button`
   border: none;
   border-radius: 10px;
 
-  & span{
+  & span {
     color: #fff;
     font-weight: bold;
   }
-`
+`;

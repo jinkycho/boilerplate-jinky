@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
+import { QueryClient, QueryClientProvider } from "react-query";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
@@ -14,6 +15,7 @@ import { pageview } from "../utils/gtag";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     getAnalytics(initializeApp(firebaseConfig));
@@ -33,9 +35,11 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [router.events]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 
