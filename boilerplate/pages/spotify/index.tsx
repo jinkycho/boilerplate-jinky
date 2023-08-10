@@ -4,78 +4,89 @@ import styled from "styled-components";
 import { useMutation, useQuery } from "react-query";
 import { GetAccessToken } from "../api/spotify";
 
-const index = () => {
-  const [player, setPlayer] = useState<any>(null);
-  const [token, setToken] = useState<string | null>(null);
+import queryString from "query-string";
+import Playback from "./Playback";
 
-  const { mutate: tokenMutate } = useMutation({
-    mutationFn: GetAccessToken,
-    onSuccess: (res) => {
-      console.log("res", res);
-      const { access_token } = res;
-      setToken(access_token);
-    },
-  });
+const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
+const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+
+const index = () => {
+  //useEffect(() => {
+  //  async function getToken() {
+  //    const response = await fetch("/auth/token");
+  //    const json = await response.json();
+  //    setToken(json.access_token);
+  //  }
+
+  //  getToken();
+  //}, []);
+
+  function generateRandomString(length: number) {
+    let text = "";
+    const possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (let i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+  async function generateCodeChallenge(codeVerifier: string) {
+    function base64encode(string: any) {
+      return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+    }
+
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    const digest = await window.crypto.subtle.digest("SHA-256", data);
+
+    return base64encode(digest);
+  }
 
   useEffect(() => {
-    if (!token) return;
+    const codeVerifier = generateRandomString(128);
+    const win: Window = window;
 
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
+    generateCodeChallenge(codeVerifier).then((codeChallenge) => {
+      const state = generateRandomString(16);
+      const scope =
+        "user-read-private user-read-email streaming user-read-playback-state user-modify-playback-state";
 
-    document.body.appendChild(script);
+      localStorage.setItem("code_verifier", codeVerifier);
+      console.log("win", win);
 
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new window.Spotify.Player({
-        name: "Web Playback SDK",
-        getOAuthToken: (cb: any) => {
-          cb(token);
-        },
-        volume: 0.5,
+      const args = queryString.stringify({
+        response_type: "code",
+        client_id: "187806a5c91740edbc79d2ddd4c5993e",
+        scope: scope,
+        redirect_uri: `http://localhost:3000/spotify/verified`,
+        state: state,
+        code_challenge_method: "S256",
+        code_challenge: codeChallenge,
       });
 
-      setPlayer(player);
+      //const args = new URLSearchParams({
+      //  response_type: "code",
+      //  client_id: "187806a5c91740edbc79d2ddd4c5993e",
+      //  scope: scope,
+      //  redirect_uri: "http://localhost:3000",
+      //  state: state,
+      //  code_challenge_method: "S256",
+      //  code_challenge: codeChallenge,
+      //});
 
-      player.addListener("ready", ({ device_id }: { device_id: string }) => {
-        console.log("Ready with Device ID", device_id);
-      });
-
-      player.addListener(
-        "not_ready",
-        ({ device_id }: { device_id: string }) => {
-          console.log("Device ID has gone offline", device_id);
-        }
-      );
-
-      player.addListener("initialization_error", ({ message }) => {
-        console.error(message);
-      });
-
-      player.addListener("authentication_error", ({ message }) => {
-        console.error(message);
-      });
-
-      player.addListener("account_error", ({ message }) => {
-        console.error(message);
-      });
-
-      player.addListener("player_state_changed", (res) => {
-        console.log("res", res);
-      });
-
-      player.addListener("playback_error", ({ message }) => {
-        console.log("message", message);
-      });
-
-      player.connect();
-      console.log("player", player);
-    };
-  }, [token]);
+      win.location = "https://accounts.spotify.com/authorize?" + args;
+      console.log("win", win.location.search);
+    });
+  }, []);
 
   return (
     <div>
-      <button onClick={() => tokenMutate()}>토큰 가져오기</button>
+      <a href="/auth/login">토큰 가져오기</a>
     </div>
   );
 };
