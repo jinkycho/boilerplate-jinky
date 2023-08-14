@@ -11,16 +11,6 @@ const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
 const index = () => {
-  //useEffect(() => {
-  //  async function getToken() {
-  //    const response = await fetch("/auth/token");
-  //    const json = await response.json();
-  //    setToken(json.access_token);
-  //  }
-
-  //  getToken();
-  //}, []);
-
   function generateRandomString(length: number) {
     let text = "";
     const possible =
@@ -57,7 +47,6 @@ const index = () => {
         "user-read-private user-read-email streaming user-read-playback-state user-modify-playback-state";
 
       localStorage.setItem("code_verifier", codeVerifier);
-      console.log("win", win);
 
       const args = queryString.stringify({
         response_type: "code",
@@ -69,18 +58,7 @@ const index = () => {
         code_challenge: codeChallenge,
       });
 
-      //const args = new URLSearchParams({
-      //  response_type: "code",
-      //  client_id: "187806a5c91740edbc79d2ddd4c5993e",
-      //  scope: scope,
-      //  redirect_uri: "http://localhost:3000",
-      //  state: state,
-      //  code_challenge_method: "S256",
-      //  code_challenge: codeChallenge,
-      //});
-
       win.location = "https://accounts.spotify.com/authorize?" + args;
-      console.log("win", win.location.search);
     });
   }, []);
 

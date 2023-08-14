@@ -2,8 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 a {
@@ -13,4 +12,40 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+/* @font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  font-display: swap;
+  src: local("Roboto-Black"), url("/fonts/Roboto-Black.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Roboto-Bold"), url("/fonts/Roboto-Bold.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Roboto-Medium"), url("/fonts/Roboto-Medium.ttf") format("ttf");
+} */
+
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Roboto-Regular"), url("/fonts/Roboto-Regular.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-display: swap;
+  src: local("NotoSansKR-Regular"),
+    url("/fonts/NotoSansKR-Regular.otf") format("otf");
 }

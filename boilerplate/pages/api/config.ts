@@ -5,16 +5,15 @@ const encode = btoa(
 );
 
 export const spotifyAccessInstance = axios.create({
-  baseURL: "https://accounts.spotify.com/",
-  headers: {
-    Authorization: `Basic ${encode}`,
-    "Content-Type": "application/x-www-form-urlencoded",
-  },
-  // params: {
-  //   grant_type: "client_credentials",
-  // },
+  baseURL: "https://api.spotify.com/v1/",
 });
 
 export const spotifyInstance = axios.create({
   baseURL: "https://api.spotify.com/",
+});
+
+spotifyAccessInstance.interceptors.request.use(async (config: any) => {
+  const token = localStorage.getItem("access_token");
+  config.headers = { Authorization: `Bearer ${token}` };
+  return config;
 });
